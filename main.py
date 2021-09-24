@@ -36,7 +36,7 @@ class InvoiceGenerator:
             "total_time": total_time,
             "total_fare": total_fare
         }
-        
+
         ride_details = RideDetails(ride_dict)
         return ride_details
 

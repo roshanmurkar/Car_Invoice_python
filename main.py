@@ -8,7 +8,7 @@ class RideDetails:
     def __str__(self):
         return f"total_kilometer of ride is = {self.total_kilometer}\n"\
                f"total_time of ride is = {self.total_time}\n"\
-               f"total_fare of ride is = {self.total_fare}"
+               f"total_fare of ride is = {self.total_fare}\n"
 
 
 class InvoiceGenerator:
@@ -36,10 +36,17 @@ class InvoiceGenerator:
             "total_time": total_time,
             "total_fare": total_fare
         }
-
+        self.ride_list.append(total_fare)
         ride_details = RideDetails(ride_dict)
         return ride_details
 
+    def calculate_avg_fare(self):
+        length = len(self.ride_list)
+        sum_of_total_fare = sum(self.ride_list)
+        avg_fare = sum_of_total_fare/length
+        print(f"Total number of rides is -> {length}")
+        print(f"Total fare of all rides is -> {sum_of_total_fare}")
+        print(f"Average fare of all rides is -> {avg_fare}")
 
 if __name__ == '__main__':
     check = InvoiceGenerator()
@@ -51,3 +58,4 @@ if __name__ == '__main__':
     print(ride2.__str__())
     print(ride3.__str__())
     print(ride4.__str__())
+    check.calculate_avg_fare()

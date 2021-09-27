@@ -1,6 +1,6 @@
 import pytest
 
-from main import InvoiceGenerator, NegativeValueError,InvalidNumericData,UserInfo,RideDetails
+from main import InvoiceGenerator, NegativeValueError,UserInfo,RideDetails
 
 
 class TestCalculator:
@@ -31,10 +31,10 @@ class TestCalculator:
 
     def test_user_data_by_id(self):
         ride1 = InvoiceGenerator(1, 20, 60).calculate_fare_normal_ride()
-        ride2 = InvoiceGenerator(1, 10, 20).calculate_fare_normal_ride()
+        ride2 = InvoiceGenerator(1, 10, 20).calculate_fare_premium_ride()
         InvoiceGenerator.ride_list.append(ride1)
         InvoiceGenerator.ride_list.append(ride2)
-        assert UserInfo(1).get_data_by_user_id() == [(1, 20, 60, 265), (1, 10, 20, 125)]
+        assert UserInfo(1).get_data_by_user_id() == [(1, 20, 60, 265,'normal'), (1, 10, 20, 200,'premium')]
 
     def test_total_rides_data(self):
         ride1 = InvoiceGenerator(1, 20, 40).calculate_fare_normal_ride()
@@ -44,3 +44,4 @@ class TestCalculator:
         InvoiceGenerator.ride_list.append(ride2)
         InvoiceGenerator.ride_list.append(ride3)
         assert RideDetails.calculate_total_fare() == 1095
+

@@ -25,12 +25,16 @@ class UserInfo:
         for single_ride in rides_list:
             if self.id_user == single_ride[0]:
                 self.user_ride_list.append(single_ride)
+        #print(self.user_ride_list)
         self.display_user_data()
         return self.user_ride_list
 
     def display_user_data(self):
         print(f"Invoice for user id -> {self.id_user}")
-        print(f"total rides are -> {self.calculate_total_rides_user()}")
+        print(f"total rides are -> {sum(self.calculate_total_rides_user())}")
+        count = self.calculate_total_rides_user()
+        print(f"Total Normal rides are -> {count[0]}")
+        print(f"Total Premium rides are -> {count[1]}")
         print(f"total kilometers are -> {self.calculate_total_kilometer_user()}")
         print(f"total time is -> {self.calculate_total_time_user()}")
         print(f"total fare is -> {self.calculate_total_fare_user()}")
@@ -39,34 +43,58 @@ class UserInfo:
 
 
     def calculate_total_fare_user(self):
+        """
+        In this function we calculated total fare of all single user rides
+        :return: users total fare
+        """
         user_total_fare = 0
         for single_ride in self.user_ride_list:
             user_total_fare += int(single_ride[3])
         return user_total_fare
 
     def calculate_avg_fare_user(self):
+        """
+        In this function we calculated avg fare of all single user rides
+        :return: user avg fare
+        """
         numerator = self.calculate_total_fare_user()
-        denominator = self.calculate_total_rides_user()
+        denominator = sum(self.calculate_total_rides_user())
         user_avg_fare = numerator/denominator
         return user_avg_fare
 
     def calculate_total_kilometer_user(self):
+        """
+        In this function we calculated total kilometer of all single user rides
+        :return: total kilometer
+        """
         user_total_kilometer = 0
         for single_ride in self.user_ride_list:
             user_total_kilometer += int(single_ride[1])
         return user_total_kilometer
 
     def calculate_total_time_user(self):
+        """
+        In this function we calculated total time of all single user rides
+        :return: total time
+        """
         user_total_time = 0
         for single_ride in self.user_ride_list:
             user_total_time += int(single_ride[2])
         return user_total_time
 
     def calculate_total_rides_user(self):
-        user_total_rides = 0
+        """
+        In this function we calculated total users normal and premium rides
+        :return: total normal rides and total premium rides
+        """
+        user_total_normal_rides = 0
+        user_total_premium_rides = 0
         for single_ride in self.user_ride_list:
-            user_total_rides += 1
-        return user_total_rides
+            if single_ride[4] == "normal":
+                user_total_normal_rides += 1
+            else:
+                user_total_premium_rides += 1
+        return user_total_normal_rides,user_total_premium_rides
 
 
 
@@ -78,7 +106,10 @@ class RideDetails:
         This function for displaying all data
         :return: Total and Average of all rides
         """
-        print(f"Total number of rides is -> {RideDetails.calculate_total_rides_user()}")
+        count = RideDetails.calculate_total_rides_user()
+        print(f"Total number of rides is -> {sum(RideDetails.calculate_total_rides_user())}")
+        print(f"Total Normal rides are -> {count[0]}")
+        print(f"Total Premium rides are -> {count[1]}")
         print(f"Total kilometer of all rides -> {RideDetails.calculate_total_kilometers()}")
         print(f"Total time of all rides -> {RideDetails.calculate_total_time()}")
         print(f"Total fare of all rides is -> {RideDetails.calculate_total_fare()}")
@@ -91,7 +122,7 @@ class RideDetails:
         :return: average fare of all rides
         """
         numerator = RideDetails.calculate_total_fare()
-        denominator = RideDetails.calculate_total_rides_user()
+        denominator = sum(RideDetails.calculate_total_rides_user())
         avg_fare = numerator/denominator
         return avg_fare
 
@@ -102,10 +133,14 @@ class RideDetails:
         :return: total number of rides
         """
         rides_list = InvoiceGenerator.ride_list
-        final_total_rides = 0
+        final_total_normal_rides = 0
+        final_total_premium_rides = 0
         for rides in rides_list:
-            final_total_rides += 1
-        return final_total_rides
+            if rides[4] == "normal":
+                final_total_normal_rides += 1
+            else:
+                final_total_premium_rides += 1
+        return final_total_normal_rides,final_total_premium_rides
 
     @staticmethod
     def calculate_total_kilometers():
@@ -154,9 +189,8 @@ class InvoiceGenerator:
 
     def calculate_fare_normal_ride(self):
         """
-        In this function we calculating total fare of single ride and
-        storing values in a list in the form of dictionary.
-        :return: ride_list that contains all rides in the form of dictionary
+        In this function we calculating total fare of normal ride
+        :return: all parameters
         """
         COST_PER_KM = 10
         COST_PER_MINUTE = 1
@@ -177,9 +211,8 @@ class InvoiceGenerator:
 
     def calculate_fare_premium_ride(self):
         """
-        In this function we calculating total fare of single ride and
-        storing values in a list in the form of dictionary.
-        :return: ride_list that contains all rides in the form of dictionary
+        In this function we calculating total fare of premium ride.
+        :return: all parameters
         """
         COST_PER_KM = 15
         COST_PER_MINUTE = 2
@@ -261,14 +294,14 @@ if __name__ == '__main__':
             time = InvoiceGenerator.get_time()
             invoice_object = InvoiceGenerator(u_id,kilometer,time).calculate_fare_normal_ride()
             InvoiceGenerator.ride_list.append(invoice_object)
-            InvoiceGenerator.display_data()
+            #InvoiceGenerator.display_data()
         elif user_choice == 2:
             u_id = InvoiceGenerator.get_user_id()
             kilometer = InvoiceGenerator.get_kilometer()
             time = InvoiceGenerator.get_time()
             invoice_object = InvoiceGenerator(u_id, kilometer, time).calculate_fare_premium_ride()
             InvoiceGenerator.ride_list.append(invoice_object)
-            InvoiceGenerator.display_data()
+            #InvoiceGenerator.display_data()
         elif user_choice == 3:
             id = InvoiceGenerator.get_user_id()
             UserInfo(id).get_data_by_user_id()
